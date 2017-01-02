@@ -20,6 +20,7 @@
     </articleTypeChannelDisplay>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
+    <description>Frequently asked question</description>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
     <fields>
