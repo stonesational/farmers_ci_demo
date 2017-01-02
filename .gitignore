@@ -1,1 +1,3 @@
-config/ *.sublime-project *.log deploy/ debug/
+# MavensMate/Sublime project files
+/config/*
+*.sublime-project
