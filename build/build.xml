@@ -18,7 +18,7 @@
  
   <!--================ org defaults ===============================-->
   <property name="org.target" value="sopoc"/>
-  <property file="${build.source}/config/${org.target}/build.properties"/>
+  <property file="${build.source}/env-config/${org.target}/build.properties"/>
   <property name="org.username" value="${username}" />
   <property name="org.password"  value="${password}" />
   <property name="org.serverUrl"  value="${serverurl}" />
