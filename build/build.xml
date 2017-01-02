@@ -4,11 +4,11 @@
  
   <tstamp/>
  
-  <property environment="env"/>
+  <!--property environment="env"/-->
  
   <!--================ build defaults ===============================-->
   <property name="build.release" value="${DSTAMP}-${TSTAMP}"/>
-  <property name="build.source" value="../"/>
+  <property name="repo.root" value="../"/>
   <property name="build.tmpdir" value="release/tmp" />
  
   <!--================ deoloy defaults ===============================-->
@@ -17,12 +17,12 @@
   <property name="deploy.testLevel" value="RunLocalTests"/>
  
   <!--================ org defaults ===============================-->
-  <property name="org.target" value="sopoc"/>
-  <property file="${build.source}/env-config/${org.target}/build.properties"/>
+  <property name="org.target" value="DEVINT"/>
+  <property file="${repo.root}/env-config/${org.target}/build.properties"/>
   <property name="org.username" value="${username}" />
   <property name="org.password"  value="${password}" />
   <property name="org.serverUrl"  value="${serverurl}" />
-  <property name="org.serverUrl" value="https://test.salesforce.com"/>
+  <!--property name="org.serverUrl" value="https://test.salesforce.com"/-->
  
   <!--================ source defaults ===============================-->
   <property name="source.packageXml" value="${build.tmpdir}/src/package.xml" />
@@ -30,7 +30,7 @@
   <!--================ Add Force.com migration tool to classpath ======-->
     <taskdef resource="com/salesforce/antlib.xml" uri="antlib:com.salesforce">
         <classpath>
-            <pathelement location="${build.source}/lib/ant-salesforce-v37.jar" />           
+            <pathelement location="${repo.root}/lib/ant-salesforce-v37.jar" />           
         </classpath>
     </taskdef>
 
@@ -40,15 +40,16 @@
                
   <target name="copyMetadata" depends="clean,diff">
 	<copy todir="${build.tmpdir}">
-  	<fileset dir="${build.source}">
+  	<fileset dir="${repo.root}">
     	<includesfile name="${build.tmpdir}/diff.txt"/>
     	<includesfile name="${build.tmpdir}/diff-meta.txt"/>
     	<exclude name="**/*.profile"/>
     	<exclude name="**/destructiveChanges/*"/>
     	<exclude name="**/build/**"/>
-    	<excludesfile name="${build.source}/.gitignore"/>
+      <exclude name="**/env-config/**"/>
+    	<excludesfile name="${repo.root}/.gitignore"/>
     	<!-- Always include readme. This will handle no diff situation -->
-    	<include name="${build.source}/Readme.md"/>
+    	<include name="${repo.root}/Readme.md"/>
     	<present present="srconly" targetdir="${build.tmpdir}"/>
   	</fileset>
 	</copy>
@@ -56,10 +57,10 @@
  
   <target name="copyProfiles" depends="clean,diff">
 	<copy todir="${build.tmpdir}">
-  	<fileset dir="${build.source}">
+  	<fileset dir="${repo.root}">
     	<includesfile name="${build.tmpdir}/diff.txt"/>
     	<!-- Always include readme. This will handle no diff situation -->
-    	<include name="${build.source}/Readme.md"/>
+    	<include name="${repo.root}/Readme.md"/>
   	</fileset>
   	<globmapper from="profiles*.profile" to="src/profiles/*.profile"/>
 	</copy>
@@ -68,10 +69,10 @@
   <target name="copyDestructiveChanges" depends="clean,diff">
 	<copy todir="${build.tmpdir}">
   	<sort>
-    	<fileset dir="${build.source}">
+    	<fileset dir="${repo.root}">
       	<includesfile name="${build.tmpdir}/diff.txt"/>
       	<!-- Always include readme. This will handle no diff situation -->
-      	<include name="${build.source}/Readme.md"/>
+      	<include name="${repo.root}/Readme.md"/>
     	</fileset>
     	<reverse xmlns="antlib:org.apache.tools.ant.types.resources.comparators">
       	<name />
@@ -94,7 +95,7 @@
  
   <target name="getrev" depends="clean">
 	<mkdir dir="${build.tmpdir}"/>
-	<exec executable="git" dir="${build.source}" output="${build.tmpdir}/ref" outputproperty="source.ref" >
+	<exec executable="git" dir="${repo.root}" output="${build.tmpdir}/ref" outputproperty="source.ref" >
   	<arg value="describe"/>
   	<arg value="--tags"/>
   	<arg value="--match"/>
@@ -105,7 +106,7 @@
  
   <target name="diff" depends="clean,getrev">
 	<mkdir dir="${build.tmpdir}"/>
-	<exec executable="git" dir="${build.source}" output="${build.tmpdir}/diff.txt" error="${build.tmpdir}/error.txt">
+	<exec executable="git" dir="${repo.root}" output="${build.tmpdir}/diff.txt" error="${build.tmpdir}/error.txt">
   	<arg line="diff --name-only ${source.ref}" />
 	</exec>
 	<copy file="${build.tmpdir}/diff.txt" tofile="${build.tmpdir}/diff-meta.txt">
@@ -122,19 +123,19 @@
   </target>
  
   <target name="createPackage" depends="clean,diff,copyMetadata,copyProfiles,copyDestructiveChanges">
-	<loadfile srcfile="${build.source}/src/package.xml" property="package.head">
+	<loadfile srcfile="${repo.root}/src/package.xml" property="package.head">
   	<filterchain>
     	<tailfilter lines="-1" skip="2"/>
   	</filterchain>
 	</loadfile>
-	<loadfile srcfile="${build.source}/src/package.xml" property="package.tail">
+	<loadfile srcfile="${repo.root}/src/package.xml" property="package.tail">
   	<filterchain>
     	<tailfilter lines="2"/>
   	</filterchain>
 	</loadfile>
 	<concat destfile="${build.tmpdir}/src/package.xml">
   	<propertyresource name="package.head"/>
-  	<fileset file="${build.source}/profiles/profiles.xml"/>
+  	<fileset file="${repo.root}/profiles/profiles.xml"/>
   	<propertyresource name="package.tail"/>
 	</concat>
   </target>
