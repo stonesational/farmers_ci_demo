@@ -1,3 +1,4 @@
 # MavensMate/Sublime project files
 /config/*
 *.sublime-project
+*.sublime-workspace
