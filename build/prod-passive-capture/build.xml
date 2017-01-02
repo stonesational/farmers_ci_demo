@@ -1,0 +1,43 @@
+<project name="Services Org" default="backup" basedir="." xmlns:sf="antlib:com.salesforce">
+
+     <!--================ build defaults ===============================--> 
+    <property file="build.properties"/>
+    <property name="build.source" value="../../"/>
+    <property name="sf.maxPoll" value="20"/>
+
+    <taskdef resource="com/salesforce/antlib.xml" uri="antlib:com.salesforce">
+        <classpath>
+            <pathelement location="${build.source}/lib/ant-salesforce-v37.jar" />           
+        </classpath>
+    </taskdef>
+
+    <target name="init_source">
+        <input message="Please enter login url:" addproperty="source.sf.serverurl" />
+        <input message="Please enter source username:" addproperty="source.sf.username" />
+        <input message="Please enter source password:" addproperty="source.sf.password" />
+    </target>
+
+    <target name="backup" depends="init_source" 
+        description="Used by Jenkins job to pull metadata from prod and check new/updates into git">
+        <sf:retrieve username="${source.sf.username}" password="${source.sf.password}" serverurl="${source.sf.serverurl}" maxPoll="${sf.maxPoll}" retrieveTarget="${build.source}/src" unpackaged="package.xml"/>
+        <!--git command="add" options="-A"/-->
+        <!--git command="commit" options='-m "Updates pulled from prod via /build.xml backup task"'/-->
+    </target>
+
+    <macrodef name="git">
+        <attribute name="command" />
+        <attribute name="options" default="" />
+        <attribute name="dir" default="" />
+        <attribute name="failerror" default="false" />
+        <element name="args" optional="true" />
+        <sequential>
+            <echo message="git dir @{dir}" />
+            <echo message="git @{command}" />
+            <exec executable="git" dir="@{dir}" failonerror="@{failerror}">
+                <arg line="@{command} @{options}" />
+                <args />
+            </exec>
+        </sequential>
+    </macrodef>
+    
+</project>
