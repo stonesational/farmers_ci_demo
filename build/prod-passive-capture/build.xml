@@ -21,7 +21,7 @@
         description="Used by Jenkins job to pull metadata from prod and check new/updates into git">
         <sf:retrieve username="${source.sf.username}" password="${source.sf.password}" serverurl="${source.sf.serverurl}" maxPoll="${sf.maxPoll}" retrieveTarget="${repo.root.dir}/src" unpackaged="package.xml"/>
         <git command="add" options="-A"/>
-        <git command="commit" options='-m "Updates pulled from prod via /build.xml backup task"'/>
+        <git command="commit" options='-m "Update(s) pulled from prod via /build/prod-passive-capture/build.xml"'/>
     </target>
 
     <macrodef name="git">
