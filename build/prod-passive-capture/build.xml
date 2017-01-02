@@ -2,12 +2,12 @@
 
      <!--================ build defaults ===============================--> 
     <property file="build.properties"/>
-    <property name="build.source" value="../../"/>
+    <property name="repo.root.dir" value="../../"/>
     <property name="sf.maxPoll" value="20"/>
 
     <taskdef resource="com/salesforce/antlib.xml" uri="antlib:com.salesforce">
         <classpath>
-            <pathelement location="${build.source}/lib/ant-salesforce-v37.jar" />           
+            <pathelement location="${repo.root.dir}/lib/ant-salesforce-v37.jar" />           
         </classpath>
     </taskdef>
 
@@ -19,9 +19,9 @@
 
     <target name="backup" depends="init_source" 
         description="Used by Jenkins job to pull metadata from prod and check new/updates into git">
-        <sf:retrieve username="${source.sf.username}" password="${source.sf.password}" serverurl="${source.sf.serverurl}" maxPoll="${sf.maxPoll}" retrieveTarget="${build.source}/src" unpackaged="package.xml"/>
-        <!--git command="add" options="-A"/-->
-        <!--git command="commit" options='-m "Updates pulled from prod via /build.xml backup task"'/-->
+        <sf:retrieve username="${source.sf.username}" password="${source.sf.password}" serverurl="${source.sf.serverurl}" maxPoll="${sf.maxPoll}" retrieveTarget="${repo.root.dir}/src" unpackaged="package.xml"/>
+        <git command="add" options="-A"/>
+        <git command="commit" options='-m "Updates pulled from prod via /build.xml backup task"'/>
     </target>
 
     <macrodef name="git">
