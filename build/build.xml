@@ -40,20 +40,20 @@
   <!--================ metadata copy target ==========================-->
                
   <target name="copyMetadata" depends="clean,diff">
-	<copy todir="${build.tmpdir}">
-  	<fileset dir="${repo.root}">
-    	<includesfile name="${build.tmpdir}/diff.txt"/>
-    	<includesfile name="${build.tmpdir}/diff-meta.txt"/>
-    	<exclude name="**/*.profile"/>
-    	<exclude name="**/destructiveChanges/*"/>
-    	<exclude name="**/build/**"/>
-      <exclude name="**/env-config/**"/>
-    	<excludesfile name="${repo.root}/.gitignore"/>
-    	<!-- Always include readme. This will handle no diff situation -->
-    	<include name="${repo.root}/Readme.md"/>
-    	<present present="srconly" targetdir="${build.tmpdir}"/>
-  	</fileset>
-	</copy>
+  	<copy todir="${build.tmpdir}">
+    	<fileset dir="${repo.root}">
+      	<includesfile name="${build.tmpdir}/diff.txt"/>
+      	<includesfile name="${build.tmpdir}/diff-meta.txt"/>
+      	<exclude name="**/*.profile"/>
+      	<exclude name="**/destructiveChanges/*"/>
+      	<exclude name="**/build/**"/>
+        <exclude name="**/env-config/**"/>
+      	<excludesfile name="${repo.root}/.gitignore"/>
+      	<!-- Always include readme. This will handle no diff situation -->
+      	<include name="${repo.root}/Readme.md"/>
+      	<present present="srconly" targetdir="${build.tmpdir}"/>
+    	</fileset>
+  	</copy>
   </target>
  
   <target name="copyProfiles" depends="clean,diff">
@@ -68,22 +68,22 @@
   </target>
  
   <target name="copyDestructiveChanges" depends="clean,diff">
-	<copy todir="${build.tmpdir}">
-  	<sort>
-    	<fileset dir="${repo.root}">
-      	<includesfile name="${build.tmpdir}/diff.txt"/>
-      	<!-- Always include readme. This will handle no diff situation -->
-      	<include name="${repo.root}/Readme.md"/>
-    	</fileset>
-    	<reverse xmlns="antlib:org.apache.tools.ant.types.resources.comparators">
-      	<name />
-    	</reverse>
-  	</sort>
-  	<firstmatchmapper>
-    	<globmapper from="destructiveChanges*.${org.target}.pre.xml" to="src/destructiveChangesPre.xml"/>
-    	<globmapper from="destructiveChanges*.${org.target}.post.xml" to="src/destructiveChangesPost.xml"/>
-  	</firstmatchmapper>
-	</copy>
+  	<copy todir="${build.tmpdir}">
+    	<sort>
+      	<fileset dir="${repo.root}">
+        	<includesfile name="${build.tmpdir}/diff.txt"/>
+        	<!-- Always include readme. This will handle no diff situation -->
+        	<include name="${repo.root}/Readme.md"/>
+      	</fileset>
+      	<reverse xmlns="antlib:org.apache.tools.ant.types.resources.comparators">
+        	<name />
+      	</reverse>
+    	</sort>
+    	<firstmatchmapper>
+      	<globmapper from="destructiveChanges*.${org.target}.pre.xml" to="src/destructiveChangesPre.xml"/>
+      	<globmapper from="destructiveChanges*.${org.target}.post.xml" to="src/destructiveChangesPost.xml"/>
+    	</firstmatchmapper>
+  	</copy>
   </target>
                
   <target name="postDeploy">
@@ -95,26 +95,26 @@
   <!--================ diff target ==========================-->
  
   <target name="getrev" depends="clean">
-	<mkdir dir="${build.tmpdir}"/>
-	<exec executable="git" dir="${repo.root}" output="${build.tmpdir}/ref" outputproperty="source.ref" >
-  	<arg value="describe"/>
-  	<arg value="--tags"/>
-  	<arg value="--match"/>
-      <arg value="*-${org.target}"/>
-  	<arg value="--abbrev=0"/>
-	</exec>
+  	<mkdir dir="${build.tmpdir}"/>
+  	<exec executable="git" dir="${repo.root}" output="${build.tmpdir}/ref" outputproperty="source.ref" >
+    	<arg value="describe"/>
+    	<arg value="--tags"/>
+    	<arg value="--match"/>
+        <arg value="*-${org.target}"/>
+    	<arg value="--abbrev=0"/>
+  	</exec>
   </target>
  
   <target name="diff" depends="clean,getrev">
-	<mkdir dir="${build.tmpdir}"/>
-	<exec executable="git" dir="${repo.root}" output="${build.tmpdir}/diff.txt" error="${build.tmpdir}/error.txt">
-  	<arg line="diff --name-only ${source.ref}" />
-	</exec>
-	<copy file="${build.tmpdir}/diff.txt" tofile="${build.tmpdir}/diff-meta.txt">
-  	<filterchain>
-    	<suffixlines suffix="-meta.xml"/>
-  	</filterchain>
-	</copy>
+  	<mkdir dir="${build.tmpdir}"/>
+  	<exec executable="git" dir="${repo.root}" output="${build.tmpdir}/diff.txt" error="${build.tmpdir}/error.txt">
+    	<arg line="diff --name-only ${source.ref}" />
+  	</exec>
+  	<copy file="${build.tmpdir}/diff.txt" tofile="${build.tmpdir}/diff-meta.txt">
+    	<filterchain>
+      	<suffixlines suffix="-meta.xml"/>
+    	</filterchain>
+  	</copy>
   </target>
  
   <!--================ createPackage target ==========================-->
@@ -124,79 +124,79 @@
   </target>
  
   <target name="createPackage" depends="clean,diff,copyMetadata,copyProfiles,copyDestructiveChanges">
-	<loadfile srcfile="${repo.root}/src/package.xml" property="package.head">
-  	<filterchain>
-    	<tailfilter lines="-1" skip="2"/>
-  	</filterchain>
-	</loadfile>
-	<loadfile srcfile="${repo.root}/src/package.xml" property="package.tail">
-  	<filterchain>
-    	<tailfilter lines="2"/>
-  	</filterchain>
-	</loadfile>
-	<concat destfile="${build.tmpdir}/src/package.xml">
-  	<propertyresource name="package.head"/>
-  	<fileset file="${repo.root}/profiles/profiles.xml"/>
-  	<propertyresource name="package.tail"/>
-	</concat>
+  	<loadfile srcfile="${repo.root}/src/package.xml" property="package.head">
+    	<filterchain>
+      	<tailfilter lines="-1" skip="2"/>
+    	</filterchain>
+  	</loadfile>
+  	<loadfile srcfile="${repo.root}/src/package.xml" property="package.tail">
+    	<filterchain>
+      	<tailfilter lines="2"/>
+    	</filterchain>
+  	</loadfile>
+  	<concat destfile="${build.tmpdir}/src/package.xml">
+    	<propertyresource name="package.head"/>
+    	<fileset file="${repo.root}/profiles/profiles.xml"/>
+    	<propertyresource name="package.tail"/>
+  	</concat>
   </target>
  
  
   <!--================ backup target ==========================-->
   <target name="backup" depends="createPackage">
-	<echo level="verbose">
-  	Backing up ${org.target}
-  	username: ${org.username}
-  	serverurl: ${org.serverurl}
-	</echo>
-	<mkdir dir="${build.tmpdir}/backup" unless:true="${deploy.checkOnly}" />
-	<sf:retrieve
- 	username="${org.username}"
- 	password="${org.password}"
- 	serverurl="${org.serverUrl}"
- 	pollWaitMillis="10000"
- 	maxPoll="5000"
- 	unpackaged="${source.packageXml}"
- 	retrieveTarget="${build.tmpdir}/backup"
- 	unless:true="${deploy.checkOnly}"/>
+  	<echo level="verbose">
+    	Backing up ${org.target}
+    	username: ${org.username}
+    	serverurl: ${org.serverurl}
+  	</echo>
+  	<mkdir dir="${build.tmpdir}/backup" unless:true="${deploy.checkOnly}" />
+  	<sf:retrieve
+     	username="${org.username}"
+     	password="${org.password}"
+     	serverurl="${org.serverUrl}"
+     	pollWaitMillis="10000"
+     	maxPoll="5000"
+     	unpackaged="${source.packageXml}"
+     	retrieveTarget="${build.tmpdir}/backup"
+     	unless:true="${deploy.checkOnly}"/>
    </target>
  
   <!--================ deployment sanity check ===================-->
   <target name="checkOnlyConfirm" unless="${deploy.checkOnly}">
-	<antcall target="displayCheckMessage" />
-  </target>
-  <target name="displayCheckMessage" unless="${env.jenkins}">
- 
-	<input message="Check only is false${line.separator}
-  	All changes are going to be deployed!${line.separator}
-  	Are you sure you want to continue (y/n)"
-  	validargs="y,n"
-  	addproperty="do.deploy"/>
-	<condition property="do.abort">
-  	<equals arg1="n" arg2="${do.deploy}"/>
-	</condition>
-	<fail if="do.abort">Deploy Aborted by user.</fail>
+  	<antcall target="displayCheckMessage" />
+    </target>
+    <target name="displayCheckMessage" unless="${env.jenkins}">
+   
+  	<input message="Check only is false${line.separator}
+    	All changes are going to be deployed!${line.separator}
+    	Are you sure you want to continue (y/n)"
+    	validargs="y,n"
+    	addproperty="do.deploy"/>
+  	<condition property="do.abort">
+    	<equals arg1="n" arg2="${do.deploy}"/>
+  	</condition>
+  	<fail if="do.abort">Deploy Aborted by user.</fail>
   </target>
  
   <!--================ primary execution deploy targes ==========================-->
   <target name="deploy" depends="checkOnlyConfirm,backup,createPackage">
-	<echo>
-  	Deploying to ${org.target}
-  	username: ${org.username}
-  	serverurl: ${org.serverUrl}
-  	checkOnly: ${deploy.checkOnly}
-	</echo>
-	<sf:deploy
- 	username="${org.username}"
- 	password="${org.password}"
- 	serverurl="${org.serverUrl}"
- 	pollWaitMillis="20000"
- 	maxPoll="5000"
- 	checkOnly="${deploy.checkOnly}"
- 	testLevel="${deploy.testLevel}"
- 	allowMissingFiles="${deploy.allowMissing}"
- 	deployRoot="${build.tmpdir}/src"/>
- 	<antcall target="postDeploy"/>
+  	<echo>
+    	Deploying to ${org.target}
+    	username: ${org.username}
+    	serverurl: ${org.serverUrl}
+    	checkOnly: ${deploy.checkOnly}
+  	</echo>
+  	<sf:deploy
+     	username="${org.username}"
+     	password="${org.password}"
+     	serverurl="${org.serverUrl}"
+     	pollWaitMillis="20000"
+     	maxPoll="5000"
+     	checkOnly="${deploy.checkOnly}"
+     	testLevel="${deploy.testLevel}"
+     	allowMissingFiles="${deploy.allowMissing}"
+     	deployRoot="${build.tmpdir}/src"/>
+   	<antcall target="postDeploy"/>
   </target>
  
  
