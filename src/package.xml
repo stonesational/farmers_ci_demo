@@ -30,6 +30,10 @@
     </types>
     <types>
         <members>*</members>
+        <name>CustomMetadata</name>
+    </types>
+    <types>
+        <members>*</members>
         <name>CustomObject</name>
     </types>
     <types>
@@ -72,5 +76,5 @@
         <members>*</members>
         <name>Workflow</name>
     </types>
-    <version>37.0</version>
+    <version>36.0</version>
 </Package>
