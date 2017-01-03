@@ -57,14 +57,7 @@
 
      <echo message="Updating package with env specific metadata"/>
      <copy todir="${build.tmpdir}/src/customMetadata" overwrite="true">
-      <fileset dir="${repo.root}/env-config/${org.target}/customMetadata">
-        <includesfile name="${build.tmpdir}/diff.txt"/>
-        <includesfile name="${build.tmpdir}/diff-meta.txt"/>
-        <!--excludesfile name="${repo.root}/.gitignore"/-->
-        <!-- Always include readme. This will handle no diff situation -->
-        <!--include name="${repo.root}/Readme.md"/-->
-        <!--present present="srconly" targetdir="${build.tmpdir}"/-->
-      </fileset>
+      <fileset dir="${repo.root}/env-config/${org.target}/customMetadata"/>
     </copy>
 
   </target>
