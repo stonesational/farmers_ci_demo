@@ -56,7 +56,7 @@
   	</copy>
 
      <echo message="Updating package with env specific metadata"/>
-     <copy todir="${build.tmpdir}/src/customMetadata">
+     <copy todir="${build.tmpdir}/src/customMetadata" overwrite="true">
       <fileset dir="${repo.root}/env-config/${org.target}/customMetadata">
         <includesfile name="${build.tmpdir}/diff.txt"/>
         <includesfile name="${build.tmpdir}/diff-meta.txt"/>
