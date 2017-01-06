@@ -14,7 +14,6 @@
   <!--================ deoloy defaults ===============================-->
   <property name="deploy.checkOnly" value="true"/>
   <property name="deploy.allowMissing" value="true"/>
-  <!--property name="deploy.testLevel" value="RunLocalTests"/-->
   <property name="deploy.testLevel" value="NoTestRun"/>
  
   <!--================ org defaults ===============================-->
